@@ -47,8 +47,21 @@ const multiply = (numberArray) => {
     return answer;
 };
 
-const divide = (numOne, numTwo) => {
-    return numOne / numTwo;
+const divide = (numberArray) => {
+
+    let intArray = [];
+    for (let j = 0; j < numberArray.length; j++) {
+        intArray.push(parseInt(numberArray[j]))
+    }
+
+    let answer = numberArray[0];
+    console.log(intArray[0] + " " + intArray[1]);
+
+    for (let i = 1; i < intArray.length; i++) {
+        answer /= intArray[i];
+    }
+    numbersToDivide.length = 0;
+    return answer;
 };
 
 const operate = (numOne, numTwo, operator) => {
@@ -113,6 +126,22 @@ const addToSubtractArray = (array) => {
     array.length = 0;
 }
 
+const addToDivideArray = (array) => {
+    const number = [];
+    if (array.includes("/")) {
+        for (let i = 0; i < array.indexOf("/"); i++) {
+            number.push(array[i]);
+        }
+    } else {
+        for (let i = 0; i < array.indexOf("="); i++) {
+            number.push(array[i]);
+        }
+    }
+    
+    numbersToDivide.push(number.join(''));
+    array.length = 0;
+}
+
 const updateScreen = (elementVal, screenArray, screenText) => {
     screenArray.push(elementVal);
 
@@ -135,6 +164,11 @@ const updateScreen = (elementVal, screenArray, screenText) => {
         lastOperator = "-";
     }
 
+    if (screenArray.includes("/")) {
+        addToDivideArray(screenArray);
+        lastOperator = "/";
+    }
+
     if (screenArray.includes("=")) {
         if (lastOperator == "+") {
             addToAddArray(screenArray);
@@ -148,7 +182,11 @@ const updateScreen = (elementVal, screenArray, screenText) => {
             addToSubtractArray(screenArray);
             screenArray.length = 0;
             screenArray.push(subtract(numbersToSubtract));
-        } 
+        } else {
+            addToDivideArray(screenArray);
+            screenArray.length = 0;
+            screenArray.push(divide(numbersToDivide));
+        }
     }
     screenText.innerText = screenArray.join('');
 }
