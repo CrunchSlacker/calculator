@@ -1,4 +1,4 @@
-let numbersToAdd = [], numbersToSubract = [], numbersToMultiply = [], numbersToDivide = [];
+let numbersToAdd = [], numbersToSubtract = [], numbersToMultiply = [], numbersToDivide = [];
 
 let lastOperator = "";
 
@@ -16,8 +16,21 @@ const add = (numberArray) => {
     return sum;
 };
 
-const subtract = (numOne, numTwo) => {
-    return numOne - numTwo;
+const subtract = (numberArray) => {
+    let answer = 0;
+    let intArray = [];
+    for (let j = 0; j < numberArray.length; j++) {
+        intArray.push(parseInt(numberArray[j]))
+    }
+
+    answer = intArray[0]
+    console.log(answer);
+
+    for (let i = 1; i < intArray.length; i++) {
+        answer -= intArray[i];
+    }
+    numbersToSubtract.length = 0;
+    return answer;
 };
 
 const multiply = (numberArray) => {
@@ -84,6 +97,22 @@ const addToMultiplyArray = (array) => {
     array.length = 0;
 }
 
+const addToSubtractArray = (array) => {
+    const number = [];
+    if (array.includes("-")) {
+        for (let i = 0; i < array.indexOf("-"); i++) {
+            number.push(array[i]);
+        }
+    } else {
+        for (let i = 0; i < array.indexOf("="); i++) {
+            number.push(array[i]);
+        }
+    }
+    
+    numbersToSubtract.push(number.join(''));
+    array.length = 0;
+}
+
 const updateScreen = (elementVal, screenArray, screenText) => {
     screenArray.push(elementVal);
 
@@ -101,6 +130,11 @@ const updateScreen = (elementVal, screenArray, screenText) => {
         lastOperator = "*";
     }
 
+    if (screenArray.includes("-")) {
+        addToSubtractArray(screenArray);
+        lastOperator = "-";
+    }
+
     if (screenArray.includes("=")) {
         if (lastOperator == "+") {
             addToAddArray(screenArray);
@@ -110,7 +144,11 @@ const updateScreen = (elementVal, screenArray, screenText) => {
             addToMultiplyArray(screenArray);
             screenArray.length = 0;
             screenArray.push(multiply(numbersToMultiply));
-        }
+        } else if (lastOperator == "-") {
+            addToSubtractArray(screenArray);
+            screenArray.length = 0;
+            screenArray.push(subtract(numbersToSubtract));
+        } 
     }
     screenText.innerText = screenArray.join('');
 }
